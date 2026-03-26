@@ -645,8 +645,35 @@ def build_layout_xml_per_sheets(wb) -> str:
 </lexml>
 """
 
+def choose_xlsx() -> Path:
+    xlsx_files = sorted(BASE_DIR.glob("*.xlsx"))
+    xlsx_files = [f for f in xlsx_files if not f.name.startswith("~$")]
+
+    if not xlsx_files:
+        raise FileNotFoundError(f"Keine .xlsx Dateien in {BASE_DIR} gefunden.")
+
+    if len(xlsx_files) == 1:
+        print(f"Verwende: {xlsx_files[0].name}")
+        return xlsx_files[0]
+
+    print("Verfügbare Excel-Dateien:")
+    for i, f in enumerate(xlsx_files, start=1):
+        print(f"  {i}) {f.name}")
+
+    while True:
+        choice = input(f"Welche Datei verwenden? (1-{len(xlsx_files)}): ").strip()
+        try:
+            idx = int(choice) - 1
+            if 0 <= idx < len(xlsx_files):
+                return xlsx_files[idx]
+        except ValueError:
+            pass
+        print("Ungültige Eingabe, bitte nochmal.")
+
+
 def main() -> None:
-    wb = openpyxl.load_workbook(XLSX_PATH, data_only=True)
+    xlsx_path = choose_xlsx()
+    wb = openpyxl.load_workbook(xlsx_path, data_only=True)
     xml = build_layout_xml_per_sheets(wb)
 
     out_path = BASE_DIR / OUT_FILENAME
