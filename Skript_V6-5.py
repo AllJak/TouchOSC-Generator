@@ -676,7 +676,7 @@ def main() -> None:
     wb = openpyxl.load_workbook(xlsx_path, data_only=True)
     xml = build_layout_xml_per_sheets(wb)
 
-    out_path = BASE_DIR / OUT_FILENAME
+    out_path = BASE_DIR / (xlsx_path.stem + ".tosc")
     out_path.write_text(xml, encoding="utf-8")
     print(f"Fertig: {out_path.resolve()}")
 
