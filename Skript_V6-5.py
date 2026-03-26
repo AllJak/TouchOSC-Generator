@@ -62,6 +62,7 @@ USE_LABEL_AS_NODE_NAME = True
 OUT_FILENAME = "touchosc_from_xlsx.tosc"
 
 class RowDef(TypedDict):
+    position: int
     osc_path: str
     label: str
     label_size: int
@@ -275,7 +276,7 @@ def read_rows_from_ws(ws) -> Tuple[List[RowDef], str]:
     out: List[RowDef] = []
     assert i_osc is not None and i_label is not None
 
-    for row in rows[header_row_index + 1:]:
+    for pos, row in enumerate(rows[header_row_index + 1:], start=1):
         label = row[i_label] if i_label < len(row) else None
 
         label_s = str(label).strip() if label is not None else ""
@@ -319,6 +320,7 @@ def read_rows_from_ws(ws) -> Tuple[List[RowDef], str]:
 
         out.append(
             RowDef(
+                position=pos,
                 osc_path=osc_s,
                 label=label_s,
                 label_size=label_size,
@@ -449,7 +451,8 @@ def button_node_xml(
 def build_page_children_xml(defs: List[RowDef]) -> str:
     children_xml: List[str] = []
 
-    for idx, d in enumerate(defs, start=1):
+    for d in defs:
+        idx = d["position"]
         col = (idx - 1) % COLUMNS
         row = (idx - 1) // COLUMNS
 
