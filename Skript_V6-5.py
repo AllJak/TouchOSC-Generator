@@ -288,7 +288,7 @@ def read_rows_from_ws(ws) -> Tuple[List[RowDef], str]:
 
         label_s = str(label).strip() if label is not None else ""
         if not label_s:
-            label_s = osc_s
+            continue
 
         label_size = _to_int(row[i_size] if (i_size is not None and i_size < len(row)) else None, DEFAULT_TEXT_SIZE)
 
@@ -606,7 +606,7 @@ def build_layout_xml_per_sheets(wb) -> str:
         page_index += 1
         inner = build_page_children_xml(defs)
 
-        tab_label = str(page_index)
+        tab_label = sname
 
         pages_xml_list.append(
             page_group_xml(
