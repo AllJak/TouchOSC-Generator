@@ -276,19 +276,14 @@ def read_rows_from_ws(ws) -> Tuple[List[RowDef], str]:
     assert i_osc is not None and i_label is not None
 
     for row in rows[header_row_index + 1:]:
-        osc = row[i_osc] if i_osc < len(row) else None
         label = row[i_label] if i_label < len(row) else None
-
-        if osc is None and label is None:
-            continue
-
-        osc_s = str(osc).strip() if osc is not None else ""
-        if not osc_s.startswith("/"):
-            continue
 
         label_s = str(label).strip() if label is not None else ""
         if not label_s:
             continue
+
+        osc = row[i_osc] if i_osc < len(row) else None
+        osc_s = str(osc).strip() if osc is not None else ""
 
         label_size = _to_int(row[i_size] if (i_size is not None and i_size < len(row)) else None, DEFAULT_TEXT_SIZE)
 
